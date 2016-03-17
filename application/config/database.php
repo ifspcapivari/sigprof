@@ -64,7 +64,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'sqlite:' . APPPATH . '/database/cidades.db',
+	'hostname' => 'sqlite:' . APPPATH . '/database/sigprof.db',
 	'username' => '',
 	'password' => '',
 	'database' => '',
