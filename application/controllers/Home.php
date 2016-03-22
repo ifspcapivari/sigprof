@@ -20,7 +20,14 @@ class Home extends CI_Controller {
     public function index()
     {
         $dados['docente'] = $this->docente->getByOne('token', $this->session->token);
+        $dados['active'] = 'home';
         $this->template->load($this->_template, 'home_view', $dados);
+    }
+    
+    public function complementar()
+    {
+        $dados['active'] = 'complementar';
+        $this->template->load($this->_template, 'complementar_view', $dados);
     }
     
 }
