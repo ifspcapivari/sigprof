@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Docente_model extends CI_Model {
     
-    public $id;
+    public $iddocente;
     public $nome;
     public $slug;
     public $email;
