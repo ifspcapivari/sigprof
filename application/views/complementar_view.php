@@ -8,7 +8,11 @@
     </div>
     <div class="form-group">
         <label for="curriculo_lattes">Currículo Lattes:</label>
-        <input type="text" class="form-control" id="curriculo_lattes" value="<?php echo "" ?>" placeholder="Insira aqui o link do seu currículo lattes" >
+        <input type="text" class="form-control" id="curriculo_lattes" name="curriculo_lattes" value="<?php echo "" ?>" placeholder="Insira aqui o link do seu currículo lattes" >
+    </div>
+    <div class="form-group">
+        <label for="titulacao">Titulação:</label>
+        <input type="text" class="form-control" id="titulacao" name="titulacao" value="<?php echo "" ?>" placeholder="Ex: Doutor em Química" >
     </div>
     <div class="form-group">
         <label for="descricao">Descrição:</label>

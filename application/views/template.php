@@ -39,15 +39,7 @@
                     </a>
                 </li>
                 <?php if(!isset($desabilitarmenu)) : ?>
-                <li>
-                    <a href="<?php echo base_url('home') ?>" <?php echo (!$active || $active == 'home' ? 'class="active"' : '') ?>>Dados Pessoais</a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url('home/complementar') ?>" <?php echo ($active == 'complementar' ? 'class="active"' : '') ?>>Informações Complementares</a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url('home/semestres') ?>" <?php echo ($active == 'semestres' ? 'class="active"' : '') ?>>Semestres</a>
-                </li>
+                <?php $this->load->view('menu_' . strtolower($this->session->perfil)) ?>
                 <li>
                     <a href="#">Ajuda</a>
                 </li>
