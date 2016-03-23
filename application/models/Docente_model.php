@@ -15,6 +15,10 @@ class Docente_model extends CI_Model {
     public $usuario;
     public $senha;
     public $token;
+    public $foto;
+    public $curriculo;
+    public $titulacao;
+    public $descricao;
                 
     
     public function __construct() 
