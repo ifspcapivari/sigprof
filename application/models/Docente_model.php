@@ -26,6 +26,11 @@ class Docente_model extends CI_Model {
         parent::__construct();
     }
     
+    public function update($docente)
+    {
+        return $this->db->update('docente', $docente, array('iddocente' => $docente->iddocente));
+    }
+    
     public function autenticar()
     {
         return  $this->db

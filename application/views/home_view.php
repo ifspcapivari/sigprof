@@ -1,4 +1,9 @@
 <h1>Dados Pessoais</h1>
+    <br />
+    <?php if($msg) : ?>
+    <div class="alert alert-danger"><?php echo $msg ?></div>
+    <?php endif; ?>
+    <br />
     <div class="form-group">
         <label for="nome">Nome:</label>
         <input type="text" class="form-control" id="nome" value="<?php echo $docente->nome ?>" readonly>
@@ -33,7 +38,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Alterar Senha</h4>
       </div>
-        <form method="post" action="">
+        <form method="post" action="<?php echo base_url('home/changepass') ?>">
             <div class="modal-body">
                 <div class="form-group">
                     <label for="senha">Nova Senha:</label>
@@ -45,7 +50,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                 <button type="button" class="btn btn-success">Alterar Senha</button>
+                 <button type="submit" class="btn btn-success">Alterar Senha</button>
                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             </div>
         </form>

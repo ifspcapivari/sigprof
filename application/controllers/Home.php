@@ -21,6 +21,7 @@ class Home extends CI_Controller {
     {
         $dados['docente'] = $this->docente->getByOne('token', $this->session->token);
         $dados['active'] = 'home';
+        $dados['msg'] = $this->session->flashdata('msg');
         $this->template->load($this->_template, 'home_view', $dados);
     }
     
@@ -30,4 +31,24 @@ class Home extends CI_Controller {
         $this->template->load($this->_template, 'complementar_view', $dados);
     }
     
+    public function changepass()
+    {
+        if($this->input->post()){
+            if($this->input->post('senha') == $this->input->post('confirmarsenha')){
+                $docente = $this->docente->getByOne('token', $this->session->token);
+                $docente->senha = md5($this->input->post('senha'));
+
+                if($this->docente->update($docente)){
+                    $this->session->set_flashdata('msg', 'Sua senha foi alterada com sucesso');
+                }
+                else{
+                    $this->session->set_flashdata('msg', 'Erro ao alterar a sua senha');
+                }
+            }
+            else{
+                $this->session->set_flashdata('msg', 'Erro: Incompatibilidade de senhas informadas');
+            }
+        }
+        redirect('home');
+    }
 }
