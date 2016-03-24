@@ -21,13 +21,91 @@ class Home extends CI_Controller {
     {
         $dados['docente'] = $this->docente->getByOne('token', $this->session->token);
         $dados['active'] = 'home';
+        $dados['msg'] = $this->session->flashdata('msg');
         $this->template->load($this->_template, 'home_view', $dados);
     }
     
     public function complementar()
     {
+        $this->load->helper('form');
+        $cursos = array(
+            'Técnico Integrado em Informática',
+            'Técnico em Manutenção e Suporte em Informática',
+            'Tecnólogo em Análise e Desenvolvimento de Sistemas',
+            'Técnico Integrado em Química',
+            'Técnico Concomitante/Subsequente em Química',
+            'Tecnólogo em Processos Químicos',
+            'Licenciatura em Química'
+        );
+        $dados['cursos'] = array_combine($cursos, $cursos);
+        
+        $anosmodulos = array(1, 2, 3, 4, 5, 6, 7, 8);
+        $dados['anosmodulos'] = array_combine($anosmodulos, $anosmodulos);
+        
+        $this->load->model('semestre_model', 'semestre');
+        $result_sem = $this->semestre->getQueryBy('status', 'Ativo')->result_array();
+        foreach ($result_sem as $reg){
+            $semestres[$reg['idsemestre']] = $reg['descricao'];
+        }
+        $dados['semestres'] = $semestres;
+        
+        $this->load->model('disciplina_model', 'disciplina');
+        $res_disc = $this->disciplina->getDisciplinasByDocente($this->docente->getByOne('token', $this->session->token)->iddocente);
+        $this->load->library('table');
+        $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
+        $this->table->set_heading(array('Disciplina', 'Curso', 'Ano/Módulo', 'Semestre'));
+        if(count($res_disc)){
+            foreach ($res_disc as $disc){
+                $this->table->add_row($disc->nomedisciplina, $disc->curso, $disc->anomodulo, $disc->descricao);
+            }
+        }
+        $dados['tabela_disciplinas'] = $this->table->generate();
+        
         $dados['active'] = 'complementar';
+        $dados['msg'] = $this->session->flashdata('msg');
+        $dados['aba'] = (!is_null($this->session->flashdata('aba')) ? $this->session->flashdata('aba') : 'home');
         $this->template->load($this->_template, 'complementar_view', $dados);
     }
     
+    public function cadastrar_disciplina()
+    {
+        if($this->input->post()){
+            $this->load->model('disciplina_model', 'disciplina');
+            $this->disciplina->nomedisciplina = $this->input->post('nomedisciplina');
+            $this->disciplina->curso = $this->input->post('curso');
+            $this->disciplina->anomodulo = $this->input->post('anomodulo');
+            $this->disciplina->iddocente = $this->docente->getByOne('token', $this->session->token)->iddocente;
+            $this->disciplina->idsemestre = $this->input->post('semestre');
+            
+            if($this->disciplina->insert()){
+                $this->session->set_flashdata('msg', 'Disciplina <strong>' . $this->disciplina->nomedisciplina . '</strong> inserida com sucesso');
+            }
+            else{
+                $this->session->set_flashdata('msg', 'Erro ao inserir disciplina');
+            }
+            $this->session->set_flashdata('aba', 'disciplinas');
+        }
+        redirect('home/complementar');
+    }
+    
+    public function changepass()
+    {
+        if($this->input->post()){
+            if($this->input->post('senha') == $this->input->post('confirmarsenha')){
+                $docente = $this->docente->getByOne('token', $this->session->token);
+                $docente->senha = md5($this->input->post('senha'));
+
+                if($this->docente->update($docente)){
+                    $this->session->set_flashdata('msg', 'Sua senha foi alterada com sucesso');
+                }
+                else{
+                    $this->session->set_flashdata('msg', 'Erro ao alterar a sua senha');
+                }
+            }
+            else{
+                $this->session->set_flashdata('msg', 'Erro: Incompatibilidade de senhas informadas');
+            }
+        }
+        redirect('home');
+    }
 }

@@ -31,4 +31,16 @@ class Semestre_model extends CI_Model {
     {
         return $this->db->get('semestre')->result();
     }
+    
+    /**
+      * Faz uma busca por param/value e retorna a query para ser utilizada como obj, array, etc.      
+    */
+    public function getQueryBy($param, $value)
+    {
+        return  $this->db
+                ->select('*')
+                ->from('semestre s')
+                ->where($param, $value)
+                ->get();
+    }
 }
