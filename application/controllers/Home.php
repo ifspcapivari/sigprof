@@ -27,44 +27,64 @@ class Home extends CI_Controller {
     
     public function complementar()
     {
-        $this->load->helper('form');
-        $cursos = array(
-            'Técnico Integrado em Informática',
-            'Técnico em Manutenção e Suporte em Informática',
-            'Tecnólogo em Análise e Desenvolvimento de Sistemas',
-            'Técnico Integrado em Química',
-            'Técnico Concomitante/Subsequente em Química',
-            'Tecnólogo em Processos Químicos',
-            'Licenciatura em Química'
-        );
-        $dados['cursos'] = array_combine($cursos, $cursos);
-        
-        $anosmodulos = array(1, 2, 3, 4, 5, 6, 7, 8);
-        $dados['anosmodulos'] = array_combine($anosmodulos, $anosmodulos);
-        
-        $this->load->model('semestre_model', 'semestre');
-        $result_sem = $this->semestre->getQueryBy('status', 'Ativo')->result_array();
-        foreach ($result_sem as $reg){
-            $semestres[$reg['idsemestre']] = $reg['descricao'];
-        }
-        $dados['semestres'] = $semestres;
-        
-        $this->load->model('disciplina_model', 'disciplina');
-        $res_disc = $this->disciplina->getDisciplinasByDocente($this->docente->getByOne('token', $this->session->token)->iddocente);
-        $this->load->library('table');
-        $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
-        $this->table->set_heading(array('Disciplina', 'Curso', 'Ano/Módulo', 'Semestre'));
-        if(count($res_disc)){
-            foreach ($res_disc as $disc){
-                $this->table->add_row($disc->nomedisciplina, $disc->curso, $disc->anomodulo, $disc->descricao);
+        if($this->input->post()){
+            $docente = $this->docente->getByOne('token', $this->session->token);
+            $docente->curriculo = $this->input->post('curriculo');
+            $docente->titulacao = $this->input->post('titulacao');
+            $docente->descricao = $this->input->post('descricao');
+            
+            if($this->docente->update($docente)){
+                $this->session->set_flashdata('msg', 'Dados atualizados com sucesso');
             }
+            else{
+                $this->session->set_flashdata('msg', 'Erro ao atualizar os dados');
+            }
+            redirect('home/complementar');
         }
-        $dados['tabela_disciplinas'] = $this->table->generate();
-        
-        $dados['active'] = 'complementar';
-        $dados['msg'] = $this->session->flashdata('msg');
-        $dados['aba'] = (!is_null($this->session->flashdata('aba')) ? $this->session->flashdata('aba') : 'home');
-        $this->template->load($this->_template, 'complementar_view', $dados);
+        else{
+            $this->load->helper('form');
+            $cursos = array(
+                'Técnico Integrado em Informática',
+                'Técnico em Manutenção e Suporte em Informática',
+                'Tecnólogo em Análise e Desenvolvimento de Sistemas',
+                'Técnico Integrado em Química',
+                'Técnico Concomitante/Subsequente em Química',
+                'Tecnólogo em Processos Químicos',
+                'Licenciatura em Química'
+            );
+            $dados['cursos'] = array_combine($cursos, $cursos);
+
+            $anosmodulos = array(1, 2, 3, 4, 5, 6, 7, 8);
+            $dados['anosmodulos'] = array_combine($anosmodulos, $anosmodulos);
+
+            $this->load->model('semestre_model', 'semestre');
+            $result_sem = $this->semestre->getQueryBy('status', 'Ativo')->result_array();
+            foreach ($result_sem as $reg){
+                $semestres[$reg['idsemestre']] = $reg['descricao'];
+            }
+            $dados['semestres'] = $semestres;
+
+            $this->load->model('disciplina_model', 'disciplina');
+            $res_disc = $this->disciplina->getDisciplinasByDocente($this->docente->getByOne('token', $this->session->token)->iddocente);
+            $this->load->library('table');
+            $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
+            $this->table->set_heading(array('Disciplina', 'Curso', 'Ano/Módulo', 'Semestre'));
+            if(count($res_disc)){
+                foreach ($res_disc as $disc){
+                    $this->table->add_row($disc->nomedisciplina, $disc->curso, $disc->anomodulo, $disc->descricao);
+                }
+            }
+            $dados['tabela_disciplinas'] = $this->table->generate();
+
+            $dados['docente'] = $this->docente->getByOne('token', $this->session->token);
+            //die(var_dump($dados['docente']->foto));
+            $dados['foto_docente'] = (file_exists('./assets/fotos/' . $dados['docente']->foto) ? 'assets/fotos/' . $dados['docente']->foto : 'assets/img/profile-default.png');
+
+            $dados['active'] = 'complementar';
+            $dados['msg'] = $this->session->flashdata('msg');
+            $dados['aba'] = (!is_null($this->session->flashdata('aba')) ? $this->session->flashdata('aba') : 'home');
+            $this->template->load($this->_template, 'complementar_view', $dados);
+        }
     }
     
     public function cadastrar_disciplina()
@@ -107,5 +127,30 @@ class Home extends CI_Controller {
             }
         }
         redirect('home');
+    }
+    
+    public function alterar_foto()
+    {
+        $docente = $this->docente->getByOne('token', $this->session->token);
+        
+        $config['upload_path'] = './assets/fotos/';
+        $config['file_name'] = $docente->slug;
+        $config['overwrite'] = TRUE;
+        $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
+        
+        $this->load->library('upload', $config);
+        if($this->upload->do_upload('foto')){
+            $docente->foto = $this->upload->data('file_name');
+            if($this->docente->update($docente)){
+                $this->session->set_flashdata('msg', 'Foto atualizada');
+            }
+            else{
+                $this->session->set_flashdata('msg', 'Erro ao atualizar foto');
+            }
+        }
+        else{
+            $this->session->set_flashdata('msg', 'Erro ao fazer o upload da foto');
+        }
+        redirect('home/complementar');
     }
 }
