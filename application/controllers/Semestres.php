@@ -27,7 +27,7 @@ class Semestres extends CI_Controller {
         
         if(count($result)){
             foreach ($result as $res){
-                $this->table->add_row($res->descricao, $res->status, '<a href="'. base_url('semestres/excluir/' . $res->idsemestre) .'" class="btn btn-primary btn-sm">Excluir</a>');
+                $this->table->add_row($res->descricao, $res->status, '<a href="'. base_url('semestres/excluir/' . $res->idsemestre) .'" class="btn btn-primary btn-sm excluir">Excluir</a>');
             }
         }
         
@@ -56,14 +56,13 @@ class Semestres extends CI_Controller {
     public function excluir($id = null)
     {
         if(!is_null($id)){
-            if($this->semestre->delete($id)){
-                $this->session->set_flashdata('msg', 'Semestre excluído com sucesso');
-            }
-            else{
-                $this->session->set_flashdata('msg', 'Erro ao excluir semestre');
+            try{
+                $this->semestre->delete($id);
+                $this->session->set_flashdata('msg', "Semestre excluído com sucesso");
+            } catch (Exception $ex) {
+                $this->session->set_flashdata('msg', $ex->getMessage());
             }
         }
         redirect('semestres');
     }
-    
 }

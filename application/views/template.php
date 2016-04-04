@@ -71,6 +71,9 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="<?php echo base_url('assets/js/bootstrap.min.js') ?>"></script>
+    
+    <!-- Funções Sigprof -->
+    <script src="<?php echo base_url('assets/js/sigprof.js') ?>"></script>
 
 </body>
 

@@ -41,4 +41,15 @@ class Disciplina_model extends CI_Model {
                 ->get()
                 ->result();
     }
+    
+    public function getDisciplinasBySemestre($idsemestre)
+    {
+        return  $this->db
+                ->select('*')
+                ->from('disciplina d')
+                ->join('semestre s', 'd.idsemestre = s.idsemestre')
+                ->where('d.idsemestre', $idsemestre)
+                ->get()
+                ->result();
+    }
 }
