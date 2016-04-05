@@ -26,6 +26,11 @@ class Docente_model extends CI_Model {
         parent::__construct();
     }
     
+    public function insertBatch($list)
+    {
+        return $this->db->insert_batch('docente', $list);
+    }
+
     public function update($docente)
     {
         return $this->db->update('docente', $docente, array('iddocente' => $docente->iddocente));
@@ -42,6 +47,11 @@ class Docente_model extends CI_Model {
                 ->row_object();
     }
     
+    public function getAll()
+    {
+        return $this->db->get('docente')->result();
+    }
+    
     public function getByOne($param, $value)
     {
         return  $this->db
@@ -50,5 +60,43 @@ class Docente_model extends CI_Model {
                 ->where($param, $value)
                 ->get()
                 ->row_object();
+    }
+    
+    public function verificarDuplicidade($list, $fields)
+    {
+        $field = array();
+        foreach ($fields as $f){
+            $field[$f] = $this->getArrayOf($f);
+        }
+        
+        $validar = true;
+        $msg = "";
+        foreach ($list as $data){
+            foreach ($data as $key => $value){
+                if(in_array($key, $fields)){
+                    if(in_array($value, $field[$key])){
+                        $msg .= "'$key' duplicado: '$value'\n";
+                        $validar = false;
+                    }
+                }            
+            }
+        }
+        
+        if($validar === false){
+            throw new Exception($msg);
+        }
+        return true;
+    }
+    
+    protected function getArrayOf($param)
+    {
+        $result = $this->db->select($param)->from('docente d')->get()->result_array();
+        $array = array();
+        
+        foreach ($result as $res){
+            $array[] = $res[$param];
+        }
+        
+        return $array;
     }
 }
