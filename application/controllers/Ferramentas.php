@@ -21,6 +21,8 @@ class Ferramentas extends CI_Controller {
     {        
         $dados['active'] = 'ferramentas';
         $dados['msg'] = $this->session->flashdata('msg');
+        $dados['importados'] = $this->session->flashdata('importados');
+        $dados['duplicados'] = $this->session->flashdata('duplicados');
         $this->template->load($this->_template, 'ferramentas_view', $dados);
     }
     
@@ -40,11 +42,14 @@ class Ferramentas extends CI_Controller {
             $list = importar($dados_up['full_path']);
             
             $this->load->model('docente_model', 'docente');
-            if($this->docente->insertBatch($list)){
-                $this->session->set_flashdata('msg', 'Lista importada com sucesso');
-            }
-            else{
-                $this->session->set_flashdata('msg', 'Erro ao imporar lista');
+            
+            try{
+               $res = $this->docente->insertBatch($list); 
+               $this->session->set_flashdata('msg', 'Lista importada com sucesso');
+               $this->session->set_flashdata('importados', $res['validos']);
+               $this->session->set_flashdata('duplicados', $res['duplicados']);
+            } catch (Exception $ex) {
+                $this->session->set_flashdata('msg', $ex->getMessage());
             }
             
             //Excluir o arquivo CSV
@@ -63,11 +68,20 @@ class Ferramentas extends CI_Controller {
         print_r($array);
         $this->load->model('docente_model', 'docente');
         
-        try{
-            $this->docente->verificarDuplicidade($array, array('nome', 'email'));
-            echo 'Nenhuma duplicidade';
-        } catch (Exception $ex) {
-            echo $ex->getMessage();
+        $retorno = $this->docente->verificarDuplicidade($array, array('email'));
+        $importados = $retorno['validos'];
+        $duplicados = $retorno['duplicados'];
+        
+        echo '<hr /> <br />';
+        echo 'Contatos Importados <br />';
+        foreach ($importados as $i){
+            echo $i['nome'] . '<br />';
+        }
+        echo '<hr />';
+        
+        echo 'Contatos Duplicados <br />';
+        foreach ($duplicados as $d){
+            echo $d['nome'] . '<br />';
         }
     }
 }

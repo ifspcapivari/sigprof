@@ -28,7 +28,14 @@ class Docente_model extends CI_Model {
     
     public function insertBatch($list)
     {
-        return $this->db->insert_batch('docente', $list);
+        $verifica = $this->verificarDuplicidade($list, array('usuario'));
+        
+        try{            
+            $this->db->insert_batch('docente', $verifica['validos']);
+            return $verifica;
+        } catch (Exception $ex) {
+            throw new Exception($ex->getMessage());
+        }
     }
 
     public function update($docente)
@@ -65,27 +72,26 @@ class Docente_model extends CI_Model {
     public function verificarDuplicidade($list, $fields)
     {
         $field = array();
+        $duplicados = array();
+        
         foreach ($fields as $f){
             $field[$f] = $this->getArrayOf($f);
         }
         
-        $validar = true;
-        $msg = "";
+        $x = 0;
         foreach ($list as $data){
             foreach ($data as $key => $value){
                 if(in_array($key, $fields)){
                     if(in_array($value, $field[$key])){
-                        $msg .= "'$key' duplicado: '$value'\n";
-                        $validar = false;
+                        $duplicados[] = $list[$x];
+                        unset($list[$x]);
                     }
                 }            
             }
+            $x++;
         }
         
-        if($validar === false){
-            throw new Exception($msg);
-        }
-        return true;
+        return array('validos' => $list, 'duplicados' => $duplicados);
     }
     
     protected function getArrayOf($param)

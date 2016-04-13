@@ -8,6 +8,22 @@
             Importar Lista de Docentes
 </button>
 <br /><br />
+<?php if($importados) : ?>
+<h2><?php echo count($importados) ?> Contato(s) importado(s)</h2>
+<ul>
+    <?php foreach ($importados as $imp) : ?>
+    <li><?php echo $imp['usuario'] . ' - ' . $imp['nome'] ?></li>
+    <?php endforeach; ?>
+</ul>
+<?php endif; ?>
+<?php if($duplicados) : ?>
+<h2><?php echo count($duplicados) ?> Contato(s) duplicado(s) não foram importado(s)</h2>
+<ul>
+    <?php foreach ($duplicados as $dup) : ?>
+    <li><?php echo $dup['usuario'] . ' - ' . $dup['nome'] ?></li>
+    <?php endforeach; ?>
+</ul>
+<?php endif; ?>
 <!-- Modal Importar Lista -->
 <div class="modal fade" id="modalImportarLista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
