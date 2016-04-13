@@ -21,11 +21,11 @@ class Docentes extends CI_Controller {
         
         $this->load->library('table');
         $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
-        $this->table->set_heading(array('#', 'Nome', 'Email', ''));
+        $this->table->set_heading(array('#', 'Nome', 'Email', 'Página', ''));
         
         if(count($result)){
             foreach ($result as $res){
-                $this->table->add_row($res->usuario, $res->nome, $res->email, '<a href="'. base_url('#') .'" class="btn btn-primary btn-sm">+Detalhes</a>');
+                $this->table->add_row($res->usuario, $res->nome, $res->email, '<a href="http://www.ifspcapivari.com.br/corpo-docente/'. $res->slug .'" target="blank">http://www.ifspcapivari.com.br/docentes/'. $res->slug .'</a>', '<a href="'. base_url('#') .'" class="btn btn-primary btn-sm">+Detalhes</a>');
             }
         }
         

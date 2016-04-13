@@ -78,7 +78,7 @@ class Home extends CI_Controller {
 
             $dados['docente'] = $this->docente->getByOne('token', $this->session->token);
             //die(var_dump($dados['docente']->foto));
-            $dados['foto_docente'] = (file_exists('./assets/fotos/' . $dados['docente']->foto) ? 'assets/fotos/' . $dados['docente']->foto : 'assets/img/profile-default.png');
+            $dados['foto_docente'] = (!is_null($dados['docente']->foto) && file_exists('./assets/fotos/' . $dados['docente']->foto) ? 'assets/fotos/' . $dados['docente']->foto : 'assets/img/profile-default.png');
 
             $dados['active'] = 'complementar';
             $dados['msg'] = $this->session->flashdata('msg');

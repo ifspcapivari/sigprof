@@ -59,10 +59,10 @@ class Docente_model extends CI_Model {
         return $this->db->get('docente')->result();
     }
     
-    public function getByOne($param, $value)
+    public function getByOne($param, $value, $fields = '*')
     {
         return  $this->db
-                ->select('*')
+                ->select($fields)
                 ->from('docente d')
                 ->where($param, $value)
                 ->get()
