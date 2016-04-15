@@ -29,13 +29,10 @@ class Docente_model extends CI_Model {
     public function insertBatch($list)
     {
         $verifica = $this->verificarDuplicidade($list, array('usuario'));
-        
-        try{            
+        if(is_array($verifica['validos']) && count($verifica['validos']) > 0){
             $this->db->insert_batch('docente', $verifica['validos']);
-            return $verifica;
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
-        }
+        }        
+        return $verifica;
     }
 
     public function update($docente)
