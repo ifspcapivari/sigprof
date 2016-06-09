@@ -41,8 +41,12 @@
         <form method="post" action="<?php echo base_url('home/changepass') ?>">
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="senha">Nova Senha:</label>
-                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Nova Senha">
+                    <label for="senha">Senha Atual:</label>
+                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha Atual">
+                </div>
+                <div class="form-group">
+                    <label for="novasenha">Nova Senha:</label>
+                    <input type="password" class="form-control" id="novasenha" name="novasenha" placeholder="Nova Senha">
                 </div>
                 <div class="form-group">
                     <label for="confirmarSenha">Confirmar Senha:</label>

@@ -116,15 +116,25 @@ class Home extends CI_Controller {
     public function changepass()
     {
         if($this->input->post()){
-            if($this->input->post('senha') == $this->input->post('confirmarsenha')){
-                $docente = $this->docente->getByOne('token', $this->session->token);
-                $docente->senha = md5($this->input->post('senha'));
-
-                if($this->docente->update($docente)){
+            if($this->input->post('novasenha') == $this->input->post('confirmarsenha')){
+                $this->load->library('curlib');
+                $this->curlib->setUrl('http://localhost/ifcpv-auth-center/api/changepass/' . TOKEN_APP);
+                $this->curlib->setType('post');
+                
+                $data = array(
+                    'usuario'   => $this->session->usuario,
+                    'senha'     => $this->input->post('senha'),
+                    'novasenha' => $this->input->post('novasenha')
+                );
+                
+                $this->curlib->setPostParams($data);
+                
+                $retorno = $this->curlib->execute();
+                if($retorno->code == 200){
                     $this->session->set_flashdata('msg', 'Sua senha foi alterada com sucesso');
                 }
                 else{
-                    $this->session->set_flashdata('msg', 'Erro ao alterar a sua senha');
+                    $this->session->set_flashdata('msg', 'Erro ao alterar a sua senha: ' . $retorno->message);
                 }
             }
             else{
