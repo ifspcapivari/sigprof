@@ -3,6 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
+| Informações exclusivas da Aplicação
+|--------------------------------------------------------------------------
+|
+| Essas constantes são informações exclusivas para essa aplicação e é 
+| altamente recomendável que elas não sejam excluídas.
+|
+*/
+define('TOKEN_APP', '11ba6b9b94271478e069506af830662e');
+
+/*
+|--------------------------------------------------------------------------
 | File and Directory Modes
 |--------------------------------------------------------------------------
 |

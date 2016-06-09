@@ -14,20 +14,26 @@ class Login extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('docente_model', 'docente');
+        $this->load->library('curlib');
         $this->template->set('desabilitarmenu', true);
     }
     
     public function index()
     {
         if($this->input->post()){
-            $this->docente->usuario = $this->input->post('usuario');
-            $this->docente->senha = md5($this->input->post('senha'));
-            $retorno = $this->docente->autenticar();
+            $this->curlib->setUrl('http://localhost/ifcpv-auth-center/api/auth/' . TOKEN_APP);
+            $this->curlib->setType('post');
+              
+            $this->curlib->setPostParams($this->input->post());
+            $retorno = $this->curlib->execute();
             
-            if(isset($retorno)){
+            if($retorno->code == 200){
                 $user_data = array(
-                    'token' => $retorno->token,
-                    'perfil' => $retorno->perfil
+                    'nome'    => $retorno->data->nome,
+                    'email'   => $retorno->data->email,
+                    'usuario' => $retorno->data->usuario,
+                    'token'   => $retorno->data->token,
+                    'perfil'  => $retorno->data->perfil
                 );
                 $this->session->set_userdata($user_data);
                 redirect('home');
@@ -39,14 +45,5 @@ class Login extends CI_Controller {
         }
         $dados['msg'] = $this->session->flashdata('msg');
         $this->template->load($this->_template, 'login_view', $dados);
-    }
-    
-    public function teste()
-    {
-        $this->docente->usuario = '13026';
-        $this->docente->senha = md5('123');
-        
-        $doc = $this->docente->autenticar();
-        print_r($doc);
     }
 }

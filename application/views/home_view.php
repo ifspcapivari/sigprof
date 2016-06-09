@@ -6,7 +6,7 @@
     <br />
     <div class="form-group">
         <label for="nome">Nome:</label>
-        <input type="text" class="form-control" id="nome" value="<?php echo $docente->nome ?>" readonly>
+        <input type="text" class="form-control" id="nome" value="<?php echo $this->session->nome ?>" readonly>
     </div>
     <div class="form-group">
         <label for="link">Link para sua página:</label>
@@ -14,15 +14,15 @@
     </div>
     <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" class="form-control" id="email" value="<?php echo $docente->email ?>" readonly>
+        <input type="email" class="form-control" id="email" value="<?php echo $this->session->email ?>" readonly>
     </div>
     <div class="form-group">
         <label for="perfil">Perfil:</label>
-        <input type="text" class="form-control" id="perfil" value="<?php echo $docente->perfil ?>" readonly>
+        <input type="text" class="form-control" id="perfil" value="<?php echo $this->session->perfil ?>" readonly>
     </div>
     <div class="form-group">
         <label for="usuario">Usuário:</label>
-        <input type="text" class="form-control" id="usuario" value="<?php echo $docente->usuario ?>" readonly>
+        <input type="text" class="form-control" id="usuario" value="<?php echo $this->session->usuario ?>" readonly>
     </div>
     <div class="form-group">
         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSenha" title="Clique para alterar sua senha de acesso ao SigProf">

@@ -7,14 +7,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Docente_model extends CI_Model {
     
-    public $iddocente;
-    public $nome;
-    public $slug;
-    public $email;
-    public $perfil;
-    public $usuario;
-    public $senha;
     public $token;
+    public $slug;
     public $foto;
     public $curriculo;
     public $titulacao;
@@ -37,18 +31,7 @@ class Docente_model extends CI_Model {
 
     public function update($docente)
     {
-        return $this->db->update('docente', $docente, array('iddocente' => $docente->iddocente));
-    }
-    
-    public function autenticar()
-    {
-        return  $this->db
-                ->select('nome, perfil, token')
-                ->from('docente d')
-                ->where('usuario', $this->usuario)
-                ->where('senha', $this->senha)
-                ->get()
-                ->row_object();
+        return $this->db->update('docente', $docente, array('token' => $docente->token));        
     }
     
     public function getAll()

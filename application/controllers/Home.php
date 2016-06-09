@@ -59,16 +59,21 @@ class Home extends CI_Controller {
 
             $this->load->model('semestre_model', 'semestre');
             $result_sem = $this->semestre->getQueryBy('status', 'Ativo')->result_array();
-            foreach ($result_sem as $reg){
-                $semestres[$reg['idsemestre']] = $reg['descricao'];
+            $dados['semestres'] = array();
+            
+            if(count($result_sem)){
+                foreach ($result_sem as $reg){
+                    $semestres[$reg['idsemestre']] = $reg['descricao'];
+                }
+                $dados['semestres'] = $semestres;
             }
-            $dados['semestres'] = $semestres;
 
             $this->load->model('disciplina_model', 'disciplina');
-            $res_disc = $this->disciplina->getDisciplinasByDocente($this->docente->getByOne('token', $this->session->token)->iddocente);
+            $res_disc = $this->disciplina->getDisciplinasByDocente($this->session->token);
             $this->load->library('table');
             $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
             $this->table->set_heading(array('Disciplina', 'Curso', 'Ano/Módulo', 'Semestre'));
+                        
             if(count($res_disc)){
                 foreach ($res_disc as $disc){
                     $this->table->add_row($disc->nomedisciplina, $disc->curso, $disc->anomodulo, $disc->descricao);
@@ -94,7 +99,7 @@ class Home extends CI_Controller {
             $this->disciplina->nomedisciplina = $this->input->post('nomedisciplina');
             $this->disciplina->curso = $this->input->post('curso');
             $this->disciplina->anomodulo = $this->input->post('anomodulo');
-            $this->disciplina->iddocente = $this->docente->getByOne('token', $this->session->token)->iddocente;
+            $this->disciplina->token_docente = $this->session->token;
             $this->disciplina->idsemestre = $this->input->post('semestre');
             
             if($this->disciplina->insert()){

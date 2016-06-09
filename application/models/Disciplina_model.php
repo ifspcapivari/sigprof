@@ -11,7 +11,7 @@ class Disciplina_model extends CI_Model {
     public $nomedisciplina;
     public $curso;
     public $anomodulo;
-    public $iddocente;
+    public $token_docente;
     public $idsemestre;
                 
     
@@ -30,13 +30,13 @@ class Disciplina_model extends CI_Model {
         return $this->db->delete('semestre', array('idsemestre' => $idsemestre));
     }
     
-    public function getDisciplinasByDocente($iddocente)
+    public function getDisciplinasByDocente($token_docente)
     {
         return  $this->db
                 ->select('*')
                 ->from('disciplina d')
                 ->join('semestre s', 'd.idsemestre = s.idsemestre')
-                ->where('d.iddocente', $iddocente)
+                ->where('d.token_docente', $token_docente)
                 ->where('s.status', 'Ativo')
                 ->get()
                 ->result();

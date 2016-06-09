@@ -12,20 +12,17 @@ class Clienteapi extends CI_Controller {
     
     public function index()
     {
-        $url  = 'http://localhost/ifcpv-auth-center/api/auth/34d8e18e40e2ec285bc6083fba31ceb1';
-        $data = ['usuario' => '130266', 'senha' => '123456'];
+        $this->load->library('curlib');
         
-        $ch   = curl_init();
+        $this->curlib->setUrl('http://localhost/ifcpv-auth-center/api/auth/34d8e18e40e2ec285bc6083fba31ceb1');
+        $this->curlib->setType('post');
         
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        //curl_setopt($ch, CURLOPT_PROXY, 'http://130266:05071986@192.168.254.254:3128');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-        $result = curl_exec($ch);
-
-        curl_close($ch);
+        $data = ['usuario' => '130266', 'senha' => '1234'];        
+        $this->curlib->setPostParams($data);
         
-        echo $result;
+        $result = $this->curlib->execute();
+        
+        print_r($result);
+        //echo $result->data->nome;
     }
 }
