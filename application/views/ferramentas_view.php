@@ -4,25 +4,15 @@
     <div class="alert alert-danger"><?php echo $msg ?></div>
 <?php endif; ?>
 <br />
-<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImportarLista" title="Clique para importar uma lista de Docentes">
+<a href="<?php echo base_url('ferramentas/importar_lista') ?>" class="btn btn-default" title="Clique para importar uma lista de Docentes">
             Importar Lista de Docentes
-</button>
+</a>
 <br /><br />
 <?php if($importados) : ?>
-<h2><?php echo count($importados) ?> Contato(s) importado(s)</h2>
-<ul>
-    <?php foreach ($importados as $imp) : ?>
-    <li><?php echo $imp['usuario'] . ' - ' . $imp['nome'] ?></li>
-    <?php endforeach; ?>
-</ul>
+<h2><?php echo count($importados) ?> Usuários(s) importado(s)</h2>
 <?php endif; ?>
 <?php if($duplicados) : ?>
 <h2><?php echo count($duplicados) ?> Contato(s) duplicado(s) não foram importado(s)</h2>
-<ul>
-    <?php foreach ($duplicados as $dup) : ?>
-    <li><?php echo $dup['usuario'] . ' - ' . $dup['nome'] ?></li>
-    <?php endforeach; ?>
-</ul>
 <?php endif; ?>
 <!-- Modal Importar Lista -->
 <div class="modal fade" id="modalImportarLista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

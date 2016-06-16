@@ -22,9 +22,13 @@ class Docente_model extends CI_Model {
     
     public function insertBatch($list)
     {
-        $verifica = $this->verificarDuplicidade($list, array('usuario'));
+        $verifica = $this->verificarDuplicidade($list, array('token'));
+        //die(print_r($verifica['validos']));
         if(is_array($verifica['validos']) && count($verifica['validos']) > 0){
-            $this->db->insert_batch('docente', $verifica['validos']);
+            if(!$this->db->insert_batch('docente', $verifica['validos'])){
+                $error = $this->db->error();
+                throw new Exception($error['message']);
+            }
         }        
         return $verifica;
     }
@@ -57,7 +61,6 @@ class Docente_model extends CI_Model {
         foreach ($fields as $f){
             $field[$f] = $this->getArrayOf($f);
         }
-        
         $x = 0;
         foreach ($list as $data){
             foreach ($data as $key => $value){
@@ -70,7 +73,6 @@ class Docente_model extends CI_Model {
             }
             $x++;
         }
-        
         return array('validos' => $list, 'duplicados' => $duplicados);
     }
     

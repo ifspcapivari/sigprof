@@ -28,36 +28,27 @@ class Ferramentas extends CI_Controller {
     
     public function importar_lista()
     {
-        $config['upload_path'] = './assets/imports/';
-        $config['file_name'] = 'CSV_' . date('YmdHis');
-        $config['overwrite'] = TRUE;
-        $config['allowed_types'] = 'csv';
+        //Importa a lista de Docentes a partir da API IFCV-Auth
+        $this->load->library('curlib');
+        $this->curlib->setUrl('http://localhost/ifcpv-auth-center/api/users/' . TOKEN_APP);
         
-        $this->load->library('upload', $config);
-        if($this->upload->do_upload('arquivo')){
-            //Fez o upload
-            $dados_up = $this->upload->data();
-            
-            $this->load->helper('importardocente');
-            $list = importar($dados_up['full_path']);
-            
-            $this->load->model('docente_model', 'docente');
-            
-            try{
-               $res = $this->docente->insertBatch($list); 
-               $this->session->set_flashdata('msg', 'Lista importada com sucesso');
-               $this->session->set_flashdata('importados', $res['validos']);
-               $this->session->set_flashdata('duplicados', $res['duplicados']);
-            } catch (Exception $ex) {
-                $this->session->set_flashdata('msg', $ex->getMessage());
-            }
-            
-            //Excluir o arquivo CSV
-            unlink($dados_up['full_path']);
+        $result = $this->curlib->execute();
+        
+        $this->load->helper('functions');
+        
+        $lista_docentes = convertDocenteToArr($result->data);
+        
+        $this->load->model('docente_model', 'docente');
+        
+        try{
+            $res = $this->docente->insertBatch($lista_docentes); 
+            $this->session->set_flashdata('msg', 'Lista importada com sucesso');
+            $this->session->set_flashdata('importados', $res['validos']);
+            $this->session->set_flashdata('duplicados', $res['duplicados']);
+        } catch (Exception $ex) {
+            $this->session->set_flashdata('msg', $ex->getMessage());
         }
-        else{
-            $this->session->set_flashdata('msg', 'Erro ao fazer o upload do arquivo');
-        }
+        
         redirect('ferramentas');
     }
     
