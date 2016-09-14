@@ -32,6 +32,7 @@ class Home extends CI_Controller {
             $docente->curriculo = $this->input->post('curriculo');
             $docente->titulacao = $this->input->post('titulacao');
             $docente->descricao = $this->input->post('descricao');
+            $docente->regime    = $this->input->post('regime');
             
             if($this->docente->update($docente)){
                 $this->session->set_flashdata('msg', 'Dados atualizados com sucesso');
@@ -44,6 +45,7 @@ class Home extends CI_Controller {
         else{
             $this->load->helper('form');
             $cursos = array(
+                'Técnico em Administração - Modalidade EJA',
                 'Técnico Integrado em Informática',
                 'Técnico em Manutenção e Suporte em Informática',
                 'Tecnólogo em Análise e Desenvolvimento de Sistemas',
@@ -53,7 +55,16 @@ class Home extends CI_Controller {
                 'Licenciatura em Química'
             );
             $dados['cursos'] = array_combine($cursos, $cursos);
-
+            
+            $regimes = array(
+                '20 horas',
+                '40 horas',
+                'RDE',
+                'Substituto',
+                'Temporário'
+            );
+            $dados['regimes'] = array_combine($regimes, $regimes);
+            
             $anosmodulos = array(1, 2, 3, 4, 5, 6, 7, 8);
             $dados['anosmodulos'] = array_combine($anosmodulos, $anosmodulos);
 

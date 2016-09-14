@@ -13,6 +13,7 @@ class Docente_model extends CI_Model {
     public $curriculo;
     public $titulacao;
     public $descricao;
+    public $regime;
                 
     
     public function __construct() 

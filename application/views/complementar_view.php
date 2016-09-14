@@ -18,6 +18,10 @@
                 </button>
             </div>
             <div class="form-group">
+                <label for="curriculo">Regime de Trabalho:</label>
+                <?php echo form_dropdown('regime', $regimes, $docente->regime, 'class="form-control"') ?>
+            </div>
+            <div class="form-group">
                 <label for="curriculo">Currículo Lattes:</label>
                 <input type="text" class="form-control" id="curriculo_lattes" name="curriculo" value="<?php echo $docente->curriculo ?>" placeholder="Insira aqui o link do seu currículo lattes" >
             </div>
