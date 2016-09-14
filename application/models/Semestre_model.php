@@ -22,6 +22,11 @@ class Semestre_model extends CI_Model {
         return $this->db->insert('semestre', $this);
     }
     
+    public function update($semestre)
+    {
+        return $this->db->update('semestre', $semestre, array('idsemestre' => $semestre->idsemestre));   
+    }
+    
     public function delete($idsemestre)
     {
         /* Verificar se não há disciplinas associadas ao semestre */
@@ -38,9 +43,32 @@ class Semestre_model extends CI_Model {
         }        
     }
     
-    public function getAll()
+    public function alterar_status($idsemestre)
     {
-        return $this->db->get('semestre')->result();
+        $reg = $this->get($idsemestre);
+        if(!$reg->idsemestre){
+            throw new Exception('Semestre não encontrado');
+        }
+        
+        $reg->status = ($reg->status == 'Ativo' ? 'Inativo' : 'Ativo');
+        if(!$this->update($reg)){
+            throw new Exception('Erro ao atualizar status');
+        }
+        return 'Semestre ' . $reg->descricao . ' ' . ($reg->status == 'Ativo' ? 'ativado' : 'inativado') . ' com sucesso';
+    }
+    
+    public function get($idsemestre)
+    {
+        return $this->db->get_where('semestre', array('idsemestre' => $idsemestre))->row_object();
+    }
+    
+    public function getAll($orderby = 'idsemestre')
+    {
+        return $this->db
+                ->from('semestre s')
+                ->order_by($orderby)
+                ->get()
+                ->result();
     }
     
     /**

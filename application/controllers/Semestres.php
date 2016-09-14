@@ -19,15 +19,15 @@ class Semestres extends CI_Controller {
     
     public function index()
     {
-        $result = $this->semestre->getAll();
+        $result = $this->semestre->getAll('idsemestre DESC');
         
         $this->load->library('table');
         $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
-        $this->table->set_heading(array('Semestre', 'Status', ''));
+        $this->table->set_heading(array('Semestre', 'Status', 'Ações'));
         
         if(count($result)){
             foreach ($result as $res){
-                $this->table->add_row($res->descricao, $res->status, '<a href="'. base_url('semestres/excluir/' . $res->idsemestre) .'" class="btn btn-primary btn-sm excluir">Excluir</a>');
+                $this->table->add_row($res->descricao, $res->status, '<a href="'. base_url('semestres/alterar_status/' . $res->idsemestre) .'" class="btn btn-primary btn-sm">'. ($res->status == 'Ativo' ? 'Desativar' : 'Ativar') .'</a>' . '&nbsp' . '<a href="'. base_url('semestres/excluir/' . $res->idsemestre) .'" class="btn btn-danger btn-sm excluir">Excluir</a>');
             }
         }
         
@@ -48,6 +48,19 @@ class Semestres extends CI_Controller {
             }
             else{
                 $this->session->set_flashdata('msg', 'Erro ao inserir semestre');
+            }
+        }
+        redirect('semestres');
+    }
+    
+    public function alterar_status($id = null)
+    {
+        if(!is_null($id)){
+            try{
+                $res = $this->semestre->alterar_status($id);
+                $this->session->set_flashdata('msg', $res);
+            } catch (Exception $ex) {
+                $this->session->set_flashdata('msg', $ex->getMessage());
             }
         }
         redirect('semestres');
