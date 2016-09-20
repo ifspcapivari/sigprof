@@ -43,6 +43,16 @@
             Adicionar Nova Disciplina
         </button>
         <br /><br />
+        <form name="formFiltroDisc" method="get" class="form-inline">
+            <div class="form-group">
+                <label>Exibir Semestre: </label>
+                <?php echo form_dropdown('s', $filtro_sem, $this->input->get('s'), 'class="form-control"') ?>
+            </div>       
+            <button type="submit" class="btn btn-primary">
+                Filtrar
+            </button>
+        </form>
+        <br /><br />
         <?php echo $tabela_disciplinas ?>
     </div>
 </div>

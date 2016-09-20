@@ -30,16 +30,18 @@ class Disciplina_model extends CI_Model {
         return $this->db->delete('semestre', array('idsemestre' => $idsemestre));
     }
     
-    public function getDisciplinasByDocente($token_docente)
+    public function getDisciplinasByDocente($token_docente, $descricao_semestre = null)
     {
-        return  $this->db
+        $query = $this->db
                 ->select('*')
                 ->from('disciplina d')
                 ->join('semestre s', 'd.idsemestre = s.idsemestre')
-                ->where('d.token_docente', $token_docente)
-                ->where('s.status', 'Ativo')
-                ->get()
-                ->result();
+                ->where('d.token_docente', $token_docente);
+        if(!is_null($descricao_semestre)){
+            $query = $query->where('s.descricao', $descricao_semestre);
+        }
+        
+        return $query->get()->result();
     }
     
     public function getDisciplinasBySemestre($idsemestre)

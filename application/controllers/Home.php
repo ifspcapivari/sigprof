@@ -68,6 +68,7 @@ class Home extends CI_Controller {
             $anosmodulos = array(1, 2, 3, 4, 5, 6, 7, 8);
             $dados['anosmodulos'] = array_combine($anosmodulos, $anosmodulos);
 
+            //Combo de Semestres 'Ativos' para o form de cadastro da disciplina
             $this->load->model('semestre_model', 'semestre');
             $result_sem = $this->semestre->getQueryBy('status', 'Ativo')->result_array();
             $dados['semestres'] = array();
@@ -78,9 +79,28 @@ class Home extends CI_Controller {
                 }
                 $dados['semestres'] = $semestres;
             }
+            
+            //Combo de Semestres para o form de filtro
+            $all_sem = $this->semestre->getAll('s.idsemestre DESC');
+            $filtro_sem = array('all' => 'Todos');
+            if(count($all_sem)){
+                foreach ($all_sem as $sem){
+                    $filtro_sem[str_replace('/', '-', $sem->descricao)] = $sem->descricao;
+                }
+                $dados['filtro_sem'] = $filtro_sem;
+            }
 
             $this->load->model('disciplina_model', 'disciplina');
-            $res_disc = $this->disciplina->getDisciplinasByDocente($this->session->token);
+            //Se houver um filtro por 'semestre' filtra, senão busca todas as disciplinas já ministradas pelo docente
+            $aba = 'home';
+            $filtro = $this->input->get('s');
+            $descricao_semestre = null;
+            if(!is_null($filtro)){
+                $descricao_semestre = ($filtro == 'all' ? null : str_replace('-', '/', $filtro));
+                $aba = 'disciplinas';
+            }            
+            $res_disc = $this->disciplina->getDisciplinasByDocente($this->session->token, $descricao_semestre);
+            
             $this->load->library('table');
             $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
             $this->table->set_heading(array('Disciplina', 'Curso', 'Ano/Módulo', 'Semestre'));
@@ -98,7 +118,7 @@ class Home extends CI_Controller {
 
             $dados['active'] = 'complementar';
             $dados['msg'] = $this->session->flashdata('msg');
-            $dados['aba'] = (!is_null($this->session->flashdata('aba')) ? $this->session->flashdata('aba') : 'home');
+            $dados['aba'] = (!is_null($this->session->flashdata('aba')) ? $this->session->flashdata('aba') : $aba);
             $this->template->load($this->_template, 'complementar_view', $dados);
         }
     }
