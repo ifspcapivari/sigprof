@@ -10,6 +10,15 @@
 <p><strong>Descrição: </strong></p>
 <p style="padding-left: 50px;"><?php echo $docente->descricao ?></p>
 <p><strong>Disciplinas: </strong></p>
+<p>
+    <?php if(count($disciplinas)) : ?>
+    <ul>
+        <?php foreach ($disciplinas as $disc) : ?>
+        <li><?php echo $disc->nomedisciplina . ' - ' . $disc->anomodulo . 'º ano/semestre de ' . $disc->curso ?></li>
+        <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+</p>
     
     
 

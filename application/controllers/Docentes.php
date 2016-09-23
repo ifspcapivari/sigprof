@@ -55,6 +55,10 @@ class Docentes extends CI_Controller {
         
         $dados['docente'] = $docente;
         $dados['foto_docente'] = (!is_null($dados['docente']->foto) && file_exists('./assets/fotos/' . $dados['docente']->foto) ? 'assets/fotos/' . $dados['docente']->foto : 'assets/img/profile-default.png');
+        
+        $this->load->model('disciplina_model', 'disciplina');
+        $dados['disciplinas'] = $this->disciplina->getDisciplinasByDocente($token_user, date('Y') . '/' . (date('m') > 7 ? '2' : '1'));
+        
         $dados['active'] = 'docentes';
         $this->template->load($this->_template, 'docentes_detalhes_view', $dados);
     }
