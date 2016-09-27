@@ -18,21 +18,40 @@ class Docentes extends CI_Controller {
     
     public function index()
     {
-        $this->curlib->setUrl('http://localhost/ifcpv-auth-center/api/users/' . TOKEN_APP);
+        $this->load->helper('file');
+        $msg_cache = true;
         
-        $result = $this->curlib->execute();
+        if($this->input->get('cache') == 'n'){
+            unlink('./application/cache/docentes.json');
+        }
+        
+        if(!file_exists('./application/cache/docentes.json')){
+            $this->curlib->setUrl('http://localhost/ifcpv-auth-center/api/users/' . TOKEN_APP);
+        
+            $result = $this->curlib->execute();
+            
+            //Gravar local            
+            if(!write_file('./application/cache/docentes.json', json_encode($result->data), 'w')){
+                die('Erro ao gravar');
+            }
+            $msg_cache = false;
+        }
+
+        $result = read_file('./application/cache/docentes.json');
+        $result = json_decode($result);
         
         $this->load->library('table');
         $this->table->set_template(array('table_open' => '<table class="table table-bordered table-hover">'));
         $this->table->set_heading(array('#', 'Nome', 'Email', ''));
         
-        if(count($result->data)){
-            foreach ($result->data as $res){
+        if(count($result)){
+            foreach ($result as $res){
                 $this->table->add_row($res->usuario, $res->nome, $res->email, '<a href="'. base_url('docentes/detalhes/' . $res->token) .'" class="btn btn-primary btn-sm">+Detalhes</a>');
             }
         }
         
         $dados['tabela'] = $this->table->generate();
+        $dados['msg_cache'] = $msg_cache;
         
         $dados['active'] = 'docentes';
         $dados['msg'] = $this->session->flashdata('msg');
